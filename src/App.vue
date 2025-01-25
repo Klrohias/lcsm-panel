@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { darkTheme, NConfigProvider, NLoadingBarProvider, NMessageProvider, useOsTheme } from 'naive-ui'
+import { darkTheme, NConfigProvider, NLoadingBarProvider, NDialogProvider, NMessageProvider, useOsTheme } from 'naive-ui'
 import { computed } from 'vue'
 import Presenter from './Presenter.vue';
 
@@ -11,9 +11,11 @@ const theme = computed(() => themeId.value == 'dark' ? darkTheme : null)
 <template>
   <n-config-provider :theme="theme">
     <n-message-provider>
-      <n-loading-bar-provider>
-        <presenter />
-      </n-loading-bar-provider>
+      <n-dialog-provider>
+        <n-loading-bar-provider>
+          <presenter />
+        </n-loading-bar-provider>
+      </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>
 </template>
