@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { listRunners, SocketType, type Runner } from '@/utils/api'
+import { listRunners, SocketType, type Runner } from '@/api'
 import { type DataTableColumns, NDataTable, NButton } from 'naive-ui'
 import { onMounted, ref } from 'vue';
 
@@ -9,7 +9,7 @@ const props = defineProps<{
   allowActions?: boolean,
   displaySocketUri?: boolean
   displaySocketType?: boolean,
-  displayId?: boolean
+  displayId?: boolean,
 }>()
 
 const emits = defineEmits<{

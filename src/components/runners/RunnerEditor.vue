@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { NForm, NFormItem, NInput, NButton, NSpin, NSelect } from 'naive-ui'
-import { SocketType, type Runner } from '@/utils/api';
+import { SocketType, type Runner } from '@/api'
 
-const props = defineProps<{
-  runner?: Runner
-}>();
+const props = withDefaults(defineProps<{
+  runner?: Runner,
+  validate?: boolean
+}>(), {
+  validate: true
+})
 
 const emits = defineEmits<{
   (e: 'save', runner: Runner): Promise<any>
-}>();
+}>()
 
 const formRule = {
   name: {
@@ -33,8 +36,17 @@ const formValue = ref<Runner>(props.runner ?? {
 })
 
 const loading = ref(false)
+const formRef = useTemplateRef('formRef')
 
 async function saveAction() {
+  if (props.validate) {
+    try {
+      await formRef?.value?.validate()
+    } catch (err) {
+      return
+    }
+  }
+
   loading.value = true
 
   await emits('save', formValue.value)

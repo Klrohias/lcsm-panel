@@ -18,7 +18,17 @@ export const router = createRouter({
       path: '/instances',
       name: 'instances',
       component: () => import('@/views/InstancesView.vue')
-    }
+    },
+    {
+      path: '/initialization',
+      name: 'initialization',
+      component: () => import('@/views/InitializationView.vue')
+    },
+    {
+      path: '/runners',
+      name: 'runners',
+      component: () => import('@/views/RunnersView.vue')
+    },
   ],
 })
 

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import '@/utils/sign-in-required'
-
 import DefaultDocument from '@/components/DefaultDocument.vue'
 import DefaultLayout from '@/components/DefaultLayout.vue'
-import { listInstances, listRunners, type Instance, type Runner } from '@/utils/api';
-import { NSelect, NSpace, NCard, NButton, NDescriptions, NDescriptionsItem, NPageHeader, NGi, NGrid, NStatistic, NTag } from 'naive-ui';
-import { computed, onMounted, ref } from 'vue';
+import { listInstances, listRunners, type Instance, type Runner } from '@/api'
+import { NSelect, NSpace, NCard, NButton, NDescriptions, NDescriptionsItem, NPageHeader, NGi, NGrid, NStatistic, NTag, useMessage } from 'naive-ui'
+import { computed, onMounted, ref } from 'vue'
+import { signInRequired } from '@/utils/signInRequired'
 
 const runners = ref<Runner[]>([])
 const instances = ref<Instance[]>([])
 const selectedRunnerId = ref<number>(0)
+const message = useMessage()
 
 const runnerOptions = computed(() => runners.value
   .map(runner => ({ label: runner.name, value: runner.id })))
@@ -20,11 +20,16 @@ async function reloadRunners() {
 }
 
 async function reloadInstances(runnerId: number) {
-  selectedRunnerId.value = runnerId
-  instances.value = await listInstances(selectedRunnerId.value)
+  try {
+    selectedRunnerId.value = runnerId
+    instances.value = await listInstances(selectedRunnerId.value)
+  } catch (err) {
+    message.error('该节点的实例列表加载失败')
+  }
 }
 
 onMounted(async () => {
+  signInRequired()
   await reloadRunners()
 })
 

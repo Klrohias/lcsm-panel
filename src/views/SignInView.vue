@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import DefaultDocument from '@/components/DefaultDocument.vue'
 import DefaultLayout from '@/components/DefaultLayout.vue'
-import { NForm, NFormItem, NInput, NCard, NSpace, NButton, NSpin } from 'naive-ui'
+import { NForm, NFormItem, NInput, NCard, NSpace, NButton, NSpin, useMessage } from 'naive-ui'
 import coverImg from '@/assets/minecraft-1970876_1280.jpg'
 import { ref, useTemplateRef } from 'vue'
-import { signIn } from '@/utils/api'
+import { signIn } from '@/api'
 import { router } from '@/router'
+
+const coverStyle = `url(${coverImg})`
 
 interface SignInForm {
   username: string,
@@ -24,7 +26,7 @@ const formRule = {
     trigger: ['blur']
   }
 }
-
+const message = useMessage()
 const formValue = ref<SignInForm>({
   username: '',
   password: ''
@@ -35,8 +37,7 @@ const loading = ref(false)
 async function signInAction() {
   try {
     await formRef?.value?.validate()
-  } catch (e) {
-    console.error(e)
+  } catch (err) {
     return
   }
 
@@ -47,16 +48,30 @@ async function signInAction() {
     await signIn(username, password);
 
     router.replace('/')
-  } catch (e) {
+  } catch (err) {
+    console.error(err)
+    message.error('登录错误')
     loading.value = false
   }
 }
-
-
 </script>
 
+<style lang="css" scoped>
+.layout-bg {
+  background-image: v-bind('coverStyle');
+}
+
+.layout-bg-blur {
+  backdrop-filter: blur(8px);
+}
+
+.embedded-bg {
+  background-color: transparent;
+}
+</style>
+
 <template>
-  <default-layout>
+  <default-layout embedded>
     <default-document>
       <n-space justify="center" size="small">
         <n-spin :show="loading">
