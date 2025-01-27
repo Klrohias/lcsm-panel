@@ -1,15 +1,9 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import DefaultDocument from '@/components/DefaultDocument.vue'
 import DefaultLayout from '@/components/DefaultLayout.vue'
 import RunnersList from '@/components/runners/RunnersList.vue'
-import { createRunner, deleteRunner, updateRunner, type Runner } from '@/api'
-import { useDialog, NButton } from 'naive-ui'
-import RunnerEditor from '@/components/runners/RunnerEditor.vue'
-import { onMounted, toRaw, useTemplateRef } from 'vue'
 import { signInRequired } from '@/utils/signInRequired'
-import { compareObject } from '@/utils/jsonPatch'
-
-const dialog = useDialog()
+import { onMounted } from 'vue';
 
 onMounted(() => {
   signInRequired()

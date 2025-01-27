@@ -29,6 +29,11 @@ export const router = createRouter({
       name: 'runners',
       component: () => import('@/views/RunnersView.vue')
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue')
+    },
   ],
 })
 

@@ -11,11 +11,12 @@ export enum SocketType {
   Builtin = 0,
   WebSocket = 1
 }
-export interface Instance {
+export interface InstanceDto {
   id: number,
   name: string,
-  workingDirectory: string,
-  launchCommand: string
+  workingDirectory?: string,
+  launchCommand?: string,
+  isRunning?: boolean
 }
 
 export interface User {

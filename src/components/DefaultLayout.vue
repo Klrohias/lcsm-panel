@@ -1,13 +1,16 @@
 <script lang="tsx" setup>
-import { NLayout, NLayoutHeader, NMenu, useOsTheme } from 'naive-ui'
+import { NIcon, NLayout, NLayoutHeader, NMenu, NButton } from 'naive-ui'
 import { RouterLink } from 'vue-router';
 import { computed } from 'vue'
 import { useUserCredential } from '@/stores/userCred'
 import logoLight from '@/assets/lcsm-logo-light.png'
 import logoDark from '@/assets/lcsm-logo-dark.png'
+import { useAppearanceStore } from '@/stores/appearance'
+import { WeatherSunny16Regular, Lightbulb16Regular, WeatherMoon16Regular } from '@vicons/fluent'
 
-const themeId = useOsTheme()
-const usedLogo = computed(() => themeId.value == 'dark' ? logoDark : logoLight)
+const appearanceStore = useAppearanceStore()
+
+const logoSrc = computed(() => appearanceStore.resolve() == 'dark' ? logoDark : logoLight)
 const userCred = useUserCredential()
 
 const props = withDefaults(defineProps<{
@@ -17,10 +20,6 @@ const props = withDefaults(defineProps<{
 })
 
 const menuOptions = [
-  {
-    label: () => <RouterLink to="/"><img src={usedLogo.value} style="max-height: 2.5rem" /></RouterLink>,
-    key: 'logo',
-  },
   ...(userCred.isAlreadySignedIn() ? [{
     label: () => <RouterLink to="/">仪表板</RouterLink>,
     key: 'home',
@@ -51,7 +50,17 @@ const menuOptions = [
 <template>
   <n-layout position="absolute" :embedded="props.embedded">
     <n-layout-header bordered :style="{ padding: '1em' }">
-      <n-menu :options="menuOptions" responsive mode="horizontal" />
+      <div class="navbar">
+        <img :src="logoSrc" style="max-height: 2.5rem" />
+        <n-menu :options="menuOptions" responsive mode="horizontal" class="navbar-menu" />
+        <n-button text @click="appearanceStore.toggleAppearance">
+          <n-icon size="18">
+            <weather-sunny16-regular v-if="appearanceStore.appearance == 'light'" />
+            <weather-moon16-regular v-if="appearanceStore.appearance == 'dark'" />
+            <lightbulb16-regular v-if="appearanceStore.appearance == 'system'" />
+          </n-icon>
+        </n-button>
+      </div>
     </n-layout-header>
 
     <n-layout :native-scrollbar="false" :embedded="props.embedded">
@@ -59,3 +68,14 @@ const menuOptions = [
     </n-layout>
   </n-layout>
 </template>
+
+<style lang="css" scoped>
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-menu {
+  flex-grow: 1;
+}
+</style>

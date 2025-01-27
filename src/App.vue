@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { darkTheme, NConfigProvider, NLoadingBarProvider, NDialogProvider, NMessageProvider, useOsTheme } from 'naive-ui'
+import { darkTheme, NConfigProvider, NLoadingBarProvider, NDialogProvider, NMessageProvider, useOsTheme, lightTheme } from 'naive-ui'
 import { computed } from 'vue'
 import Presenter from './Presenter.vue';
+import { useAppearanceStore } from './stores/appearance'
 
-const themeId = useOsTheme()
-const theme = computed(() => themeId.value == 'dark' ? darkTheme : null)
+const appearanceStore = useAppearanceStore()
+const theme = computed(() => appearanceStore.resolve() == 'dark' ? darkTheme : lightTheme)
 
 </script>
 
