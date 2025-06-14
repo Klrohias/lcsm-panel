@@ -30,16 +30,24 @@ const menuOptions = [
   }] : []),
   ...(userCred.isAdministrator ? [
     {
-      label: '管理',
+      label: '管理员',
       key: 'admin',
       children: [
         {
-          label: () => <RouterLink to="/runners">节点管理</RouterLink>,
+          label: () => <RouterLink to="/admin/runners">节点管理</RouterLink>,
           key: 'runners',
         },
         {
-          label: () => <RouterLink to="/users">用户管理</RouterLink>,
+          label: () => <RouterLink to="/admin/users">用户管理</RouterLink>,
           key: 'users',
+        },
+        {
+          label: () => <RouterLink to="/admin/instances">实例管理</RouterLink>,
+          key: 'instances',
+        },
+        {
+          label: () => <RouterLink to="/admin/api">API 管理</RouterLink>,
+          key: 'api',
         }
       ]
     },

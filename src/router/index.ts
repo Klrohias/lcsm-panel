@@ -25,9 +25,9 @@ export const router = createRouter({
       component: () => import('@/views/InitializationView.vue')
     },
     {
-      path: '/runners',
-      name: 'runners',
-      component: () => import('@/views/RunnersView.vue')
+      path: '/admin/runners',
+      name: 'admin-runners',
+      component: () => import('@/views/admin/RunnersAdminView.vue')
     },
     {
       path: '/:pathMatch(.*)*',
