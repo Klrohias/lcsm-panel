@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
 import { NForm, NFormItem, NInput, NButton, NSpin, NSelect } from 'naive-ui'
-import { SocketType, type Runner } from '@/api'
+import { type Runner } from '@/api'
 
 const props = withDefaults(defineProps<{
   runner?: Runner,
@@ -19,20 +19,20 @@ const formRule = {
     required: true,
     trigger: ['blur'],
     message: '节点名称不能留空'
+  },
+  authToken: {
+    required: true,
+    trigger: ['blur'],
+    message: '节点密钥不可留空'
   }
 }
-
-const socketTypeOptions = [
-  { label: 'WebSocket', value: SocketType.WebSocket },
-  { label: '内置', value: SocketType.Builtin }
-]
 
 const formValue = ref<Runner>(props.runner ?? {
   name: '',
   id: 0,
-  socketType: 0,
   description: '',
-  socketUri: ''
+  endPoint: '',
+  authToken: ''
 })
 
 const loading = ref(false)
@@ -62,12 +62,12 @@ async function saveAction() {
         <n-input v-model:value="formValue.name" placeholder="在此输入节点名称" />
       </n-form-item>
 
-      <n-form-item path="socketType" label="连接类型">
-        <n-select v-model:value="formValue.socketType" :options="socketTypeOptions" />
+      <n-form-item path="endPoint" label="连接地址">
+        <n-input v-model:value="formValue.endPoint" placeholder="在此输入节点连接地址" />
       </n-form-item>
 
-      <n-form-item path="socketUri" label="连接地址">
-        <n-input v-model:value="formValue.socketUri" placeholder="在此输入节点连接地址，内置节点可留空" />
+      <n-form-item path="authToken" label="密钥">
+        <n-input v-model:value="formValue.authToken" placeholder="在此输入节点的鉴权密钥" />
       </n-form-item>
 
       <n-form-item path="description" label="描述">

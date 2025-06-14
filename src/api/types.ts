@@ -2,15 +2,11 @@
 export interface Runner {
   id: number,
   name: string,
-  socketUri: string,
+  endPoint: string,
   description: string,
-  socketType: SocketType
+  authToken: string
 }
 
-export enum SocketType {
-  Builtin = 0,
-  WebSocket = 1
-}
 export interface InstanceDto {
   id: number,
   name: string,
@@ -23,4 +19,9 @@ export interface User {
   id: number,
   username: string,
   password: string
+}
+
+export interface PagedDto<T> {
+  total: number,
+  items: T[]
 }

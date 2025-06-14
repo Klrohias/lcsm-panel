@@ -11,7 +11,7 @@ export async function signInRequired() {
 
   try {
     let resp = await httpClient.get('/User')
-    userCred.isAdministrator = resp.data['isAdministrator']
+    userCred.isAdministrator = resp.data['role'] == 'admin'
   } catch (e: any) {
     if (e.status == 401) {
       router.replace('/signIn')

@@ -2,19 +2,19 @@
 import DefaultDocument from '@/components/DefaultDocument.vue'
 import DefaultLayout from '@/components/DefaultLayout.vue'
 import { listInstances, listRunners, startInstance, terminateInstance, type InstanceDto, type Runner } from '@/api'
-import { NSelect, NSpace, NCard, NButton, NDescriptions, NDescriptionsItem, NPageHeader, NGi, NGrid, NStatistic, NTag, useMessage, NButtonGroup, NPopconfirm } from 'naive-ui'
+import { NSelect, NSpace, NCard, NSpin, NButton, NDescriptions, NDescriptionsItem, NPageHeader, NGi, NGrid, NStatistic, NTag, useMessage, NButtonGroup, NPopconfirm } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { signInRequired } from '@/utils/signInRequired'
 
 const runners = ref<Runner[]>([])
 const instances = ref<InstanceDto[]>([])
 const selectedRunnerId = ref<number>(0)
+const instanceCount = ref<number>(0);
 const message = useMessage()
-
-const instanceCount = computed(() => instances.value.length);
-const runningInstanceCount = computed(() => instances.value.filter(x => x.isRunning).length);
+const runningInstanceCount = computed(() => instances.value.filter(x => x.isRunning).length); // TODO
 const runnerOptions = computed(() => runners.value
   .map(runner => ({ label: runner.name, value: runner.id })))
+const isLoading = ref(false)
 
 async function reloadRunners() {
   runners.value = await listRunners()
@@ -23,12 +23,18 @@ async function reloadRunners() {
 
 async function reloadInstances(runnerId?: number) {
   try {
+    isLoading.value = true
     if (runnerId !== void 0) {
       selectedRunnerId.value = runnerId
     }
-    instances.value = await listInstances(selectedRunnerId.value)
+    var paged = await listInstances(selectedRunnerId.value);
+    instances.value = paged.items
+    instanceCount.value = paged.total
+
   } catch (err) {
     message.error('该节点的实例列表加载失败')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -69,40 +75,42 @@ onMounted(async () => {
       </n-page-header>
 
 
-      <n-space justify="center" size="small">
-        <n-card v-for="instance in instances" v-bind:key="instance.id" :title="instance.name" style="width: 20rem;">
-          <template #header-extra>
-            <n-tag type="error" v-if="!instance.isRunning">
-              停止
-            </n-tag>
-            <n-tag type="success" v-if="instance.isRunning">
-              运行中
-            </n-tag>
-          </template>
-          <n-descriptions size="small" :columns="2">
-            <n-descriptions-item label="到期时间">
-              没做
-            </n-descriptions-item>
-            <n-descriptions-item label="类型">
-              没做
-            </n-descriptions-item>
-          </n-descriptions>
+      <n-spin :show="isLoading" size="large">
+        <n-space justify="center" size="small">
+          <n-card v-for="instance in instances" v-bind:key="instance.id" :title="instance.name" style="width: 20rem;">
+            <template #header-extra>
+              <n-tag type="error" v-if="!instance.isRunning">
+                停止
+              </n-tag>
+              <n-tag type="success" v-if="instance.isRunning">
+                运行中
+              </n-tag>
+            </template>
+            <n-descriptions size="small" :columns="2">
+              <n-descriptions-item label="到期时间">
+                没做
+              </n-descriptions-item>
+              <n-descriptions-item label="类型">
+                没做
+              </n-descriptions-item>
+            </n-descriptions>
 
-          <template #action>
-            <n-button-group>
-              <n-button>管理</n-button>
-              <n-popconfirm positive-text="确认" negative-text="取消" @positive-click="startOrStopInstance(instance)">
-                <template #trigger>
-                  <n-button v-if="instance.isRunning">停止</n-button>
-                  <n-button v-if="!instance.isRunning">启动</n-button>
-                </template>
-                确定要进行这一操作？
-              </n-popconfirm>
-              <n-button>编辑</n-button>
-            </n-button-group>
-          </template>
-        </n-card>
-      </n-space>
+            <template #action>
+              <n-button-group>
+                <n-button>管理</n-button>
+                <n-popconfirm positive-text="确认" negative-text="取消" @positive-click="startOrStopInstance(instance)">
+                  <template #trigger>
+                    <n-button v-if="instance.isRunning">停止</n-button>
+                    <n-button v-if="!instance.isRunning">启动</n-button>
+                  </template>
+                  确定要进行这一操作？
+                </n-popconfirm>
+                <n-button>编辑</n-button>
+              </n-button-group>
+            </template>
+          </n-card>
+        </n-space>
+      </n-spin>
     </default-document>
   </default-layout>
 </template>

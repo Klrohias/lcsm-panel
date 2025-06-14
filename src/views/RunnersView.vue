@@ -84,8 +84,8 @@ function onDeleteRunner(runner: Runner) {
         </template>
       </n-page-header>
 
-      <runners-list allow-actions display-id display-socket-type display-socket-uri @edit="onEditRunner"
-        @delete="onDeleteRunner" ref="runners-list" bordered />
+      <runners-list allow-actions display-id display-end-point @edit="onEditRunner" @delete="onDeleteRunner"
+        ref="runners-list" bordered />
     </default-document>
   </default-layout>
 </template>

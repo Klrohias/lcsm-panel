@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { listRunners, SocketType, type Runner } from '@/api'
+import { listRunners, type Runner } from '@/api'
 import { type DataTableColumns, NDataTable, NButton } from 'naive-ui'
 import { onMounted, ref } from 'vue';
 
@@ -7,8 +7,7 @@ const data = ref<Runner[]>([]);
 
 const props = defineProps<{
   allowActions?: boolean,
-  displaySocketUri?: boolean
-  displaySocketType?: boolean,
+  displayEndPoint?: boolean
   displayId?: boolean,
 }>()
 
@@ -39,20 +38,10 @@ onMounted(async () => {
     key: 'name'
   });
 
-  if (props.displaySocketType) {
-    columns.value.push({
-      title: '连接类型',
-      key: 'socketUri',
-      render(rowData) {
-        return rowData.socketType == SocketType.Builtin ? '内置' : 'WebSocket'
-      },
-    })
-  }
-
-  if (props.displaySocketUri) {
+  if (props.displayEndPoint) {
     columns.value.push({
       title: '连接地址',
-      key: 'socketUri'
+      key: 'endPoint'
     })
   }
 
